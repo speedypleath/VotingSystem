@@ -1,0 +1,13 @@
+{
+  "name": "voting-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.6",
+    "solidity-coverage": "^0.7.20",
+    "styled-components": "^5.3.5"
+  },
+  "scripts": {
+    "test": "npx truffle test",
+    "coverage": "npx truffle run coverage"
+  }
+}

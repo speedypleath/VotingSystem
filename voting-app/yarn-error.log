@@ -1,0 +1,45 @@
+Arguments: 
+  /Users/speedypleath/.nvm/versions/node/v16.14.2/bin/node /Users/speedypleath/.node/corepack/yarn/1.22.15/bin/yarn.js add truffle-coverage
+
+PATH: 
+  /Users/speedypleath/.nvm/versions/node/v16.14.2/bin:/Users/speedypleath/google-cloud-sdk/bin:/opt/homebrew/bin:/usr/local/bin:/usr/local/bin:usr/bin:/Users/speedypleath/Applications/Android/sndcpy/:/Users/speedypleath/Applications/Android/sndcpy/:/Users/speedypleath/Library/Android/sdk/platform-tools:/Users/speedypleath/Library/Android/sdk:/opt/homebrew/Caskroom/miniforge/base/bin:/opt/homebrew/Caskroom/miniforge/base/condabin:/Users/speedypleath/.npm-global/bin:/opt/homebrew/Cellar/gradle/7.4:/Users/speedypleath/bin:/Users/speedypleath/Builds/flutter/bin:/opt/homebrew/opt/bison/bin:/usr/bin:/opt/homebrew/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:/opt/X11/bin:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS
+
+Yarn version: 
+  1.22.15
+
+Node version: 
+  16.14.2
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/truffle-coverage: Not found
+      at Request.params.callback [as _callback] (/Users/speedypleath/.node/corepack/yarn/1.22.15/lib/cli.js:66140:18)
+      at Request.self.callback (/Users/speedypleath/.node/corepack/yarn/1.22.15/lib/cli.js:140885:22)
+      at Request.emit (node:events:526:28)
+      at Request.<anonymous> (/Users/speedypleath/.node/corepack/yarn/1.22.15/lib/cli.js:141857:10)
+      at Request.emit (node:events:526:28)
+      at IncomingMessage.<anonymous> (/Users/speedypleath/.node/corepack/yarn/1.22.15/lib/cli.js:141779:12)
+      at Object.onceWrapper (node:events:645:28)
+      at IncomingMessage.emit (node:events:538:35)
+      at endReadableNT (node:internal/streams/readable:1345:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+
+npm manifest: 
+  {
+    "name": "VotingApp",
+    "version": "1.0.0",
+    "dependencies": {
+      "@truffle/hdwallet-provider": "^2.0.6"
+    },
+    "scripts": {
+      "test": "truffle test"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
