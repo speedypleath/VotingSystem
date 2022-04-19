@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "npx truffle test",
-    "coverage": "npx truffle run coverage"
+    "coverage": "npx truffle run coverage",
+    "start": "cd app && npm run dev"
   }
 }

@@ -1,39 +1,88 @@
 package main
 
 import (
-	"net/http"
-	"net/http/httptest"
-	"testing"
-
+	"bytes"
+	"github.com/ProtonMail/gopenpgp/v2/crypto"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	"voting-service/api/encryption"
+	"voting-service/api/models"
 )
 
-var secrets = gin.H{
-	"foo":    gin.H{"email": "foo@bar.com", "phone": "123433"},
-	"austin": gin.H{"email": "austin@example.com", "phone": "666"},
-	"lena":   gin.H{"email": "lena@guapa.com", "phone": "523443"},
+var secrets = map[int]models.Voter{
+	2056: {Name: "Gheorghe Andrei", Email: "gheorgheandrei13@gmail.com", Pass: []byte("password"), Vote: []byte("0"), Bits: 2056},
+}
+
+var keys = map[int]crypto.KeyRing{}
+
+func loginEndpoint(c *gin.Context) {
+	requestBody := models.Form{}
+	err := c.BindJSON(&requestBody)
+	println(err)
+	if err != nil {
+		println(err.Error())
+		c.JSON(400, gin.H{
+			"message": "pong",
+		})
+	}
+
+	if val, ok := secrets[requestBody.Bits]; ok {
+		password := bytes.NewBuffer(val.Pass).String()
+		if requestBody.Password == password {
+			println("Da")
+			publicKey := encryption.GenerateKeys(*models.NewVoter())
+			keys[requestBody.Bits] = publicKey
+			c.JSON(200, gin.H{
+				"message": "success",
+			})
+			return
+		}
+	}
+
+	c.JSON(400, gin.H{
+		"message": "pong",
+	})
+}
+
+func voteEndpoint(c *gin.Context) {
+	requestBody := models.Vote{}
+	err := c.BindJSON(&requestBody)
+	if err != nil {
+		println(err.Error())
+		c.JSON(400, gin.H{
+			"message": "pong",
+		})
+	}
+
+	keyPacket, dataPacket := encryption.EncryptVote()
+	c.JSON(200, gin.H{
+		"key":    keyPacket,
+		"packet": dataPacket,
+	})
+}
+
+func checkVotePacket(c *gin.Context) {
+	requestBody := models.EncryptedVote{}
+	err := c.BindJSON(&requestBody)
+	if err != nil {
+		println(err.Error())
+		c.JSON(400, gin.H{
+			"message": "pong",
+		})
+	}
+
+	vote := encryption.DecodeVote(requestBody.KeyPacket, requestBody.DataPacket)
+	c.JSON(400, gin.H{
+		"vote": vote,
+	})
 }
 
 func setupRouter() *gin.Engine {
 	router := gin.Default()
-
-	authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
-		"foo":    "bar",
-		"austin": "1234",
-		"lena":   "hello2",
-		"manu":   "4321",
-	}))
-
-	authorized.GET("/secrets", func(c *gin.Context) {
-		user := c.MustGet(gin.AuthUserKey).(string)
-		if secret, ok := secrets[user]; ok {
-			c.JSON(http.StatusOK, gin.H{"user": user, "secret": secret})
-		} else {
-			c.Redirect(http.StatusMovedPermanently, "/auth/login")
-			c.Abort()
-		}
-	})
+	router.Use(cors.Default())
+	router.POST("/login", loginEndpoint)
+	router.POST("/vote", voteEndpoint)
+	router.POST("/check", checkVotePacket)
 	return router
 }
 
@@ -43,15 +92,4 @@ func main() {
 	if err != nil {
 		return
 	}
-}
-
-func TestPingRoute(t *testing.T) {
-	router := setupRouter()
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/ping", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "pong", w.Body.String())
 }
